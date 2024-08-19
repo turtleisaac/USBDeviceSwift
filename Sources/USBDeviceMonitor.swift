@@ -150,9 +150,11 @@ open class USBDeviceMonitor {
                 plugInInterfacePtrPtr:plugInInterfacePtrPtr
             )
             
-            NotificationCenter.default.post(name: .USBDeviceConnected, object: [
-                "device": device
-            ])
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .USBDeviceConnected, object: [
+                    "device": device
+                ])
+            }
         }
     }
     
@@ -176,9 +178,11 @@ open class USBDeviceMonitor {
                 continue
             }
             
-            NotificationCenter.default.post(name: .USBDeviceDisconnected, object: [
-                "id": did
-            ])
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .USBDeviceDisconnected, object: [
+                    "id": did
+                ])
+            }
         }
     }
 }

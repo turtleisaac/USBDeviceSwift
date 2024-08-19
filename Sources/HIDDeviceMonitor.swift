@@ -55,7 +55,10 @@ open class HIDDeviceMonitor {
     
     open func read(_ inResult: IOReturn, inSender: UnsafeMutableRawPointer, type: IOHIDReportType, reportId: UInt32, report: UnsafeMutablePointer<UInt8>, reportLength: CFIndex) {
         let data = Data(bytes: UnsafePointer<UInt8>(report), count: reportLength)
-        NotificationCenter.default.post(name: .HIDDeviceDataReceived, object: ["data": data])
+        
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .HIDDeviceDataReceived, object: ["data": data])
+        }
     }
     
     open func rawDeviceAdded(_ inResult: IOReturn, inSender: UnsafeMutableRawPointer, inIOHIDDeviceRef: IOHIDDevice!) {
@@ -70,14 +73,19 @@ open class HIDDeviceMonitor {
         IOHIDDeviceRegisterInputReportCallback(inIOHIDDeviceRef!, report, reportSize, inputCallback, unsafeBitCast(self, to: UnsafeMutableRawPointer.self))
         
         let device = HIDDevice(device:inIOHIDDeviceRef)
-        NotificationCenter.default.post(name: .HIDDeviceConnected, object: ["device": device])
+        
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .HIDDeviceConnected, object: ["device": device])
+        }
     }
     
     open func rawDeviceRemoved(_ inResult: IOReturn, inSender: UnsafeMutableRawPointer, inIOHIDDeviceRef: IOHIDDevice!) {
         let device = HIDDevice(device:inIOHIDDeviceRef)
-        NotificationCenter.default.post(name: .HIDDeviceDisconnected, object: [
-            "id": device.id,
-            "device": device
-        ])
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .HIDDeviceDisconnected, object: [
+                "id": device.id,
+                "device": device
+            ])
+        }
     }
 }

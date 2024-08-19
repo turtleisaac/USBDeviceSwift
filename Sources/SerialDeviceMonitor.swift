@@ -58,13 +58,14 @@ open class SerialDeviceMonitor {
         let newSet = Set(newSerialDevices)
         
         
-        
-        for sd in oldSet.subtracting(newSet) {
-            NotificationCenter.default.post(name: .SerialDeviceRemoved, object: ["device": sd])
-        }
-        
-        for sd in newSet.subtracting(oldSet) {
-            NotificationCenter.default.post(name: .SerialDeviceAdded, object: ["device": sd])
+        DispatchQueue.main.async {
+            for sd in oldSet.subtracting(newSet) {
+                NotificationCenter.default.post(name: .SerialDeviceRemoved, object: ["device": sd])
+            }
+            
+            for sd in newSet.subtracting(oldSet) {
+                NotificationCenter.default.post(name: .SerialDeviceAdded, object: ["device": sd])
+            }
         }
         
         serialDevices = newSerialDevices
